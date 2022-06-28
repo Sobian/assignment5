@@ -2,6 +2,10 @@ public class Player {
     private String playerName;
     private int score;
 
+    /*this class is designated to create different player at the begining of game
+    *, player and their scores will be serialized, and table of scores is visible after "game over"
+    */
+
     public Player(String playerName, int score){
         this.playerName = playerName;
         this.score = 0;
