@@ -21,27 +21,20 @@ public class GameWindow extends JPanel {
     Color bgCol = new Color(255,200,0);
     Color squareCol = new Color(0,0,160);
     Rectangle rect;
-    List<Rectangle> listOfRect = new ArrayList<>();
+    ArrayList<Square> listOfRect = null;
 
     public GameWindow() {
         setLayout(new BorderLayout());
         invokeGamePanel();
         invokeScorePanel();
-
+        repaint();
 
 
     }
 
     public void timer(){
         new Timer(timer_step, actEvt -> {
-            //if todo
-            if (true /*rectX < PREF_W && rectY < PREF_H*/) {
-                /*rectX++;
-                rectY++;*/
                 repaint();
-            } else {
-                ((Timer)actEvt.getSource()).stop();
-            }
         }).start();
     }
 
@@ -53,6 +46,10 @@ public class GameWindow extends JPanel {
         add(gamePanel);
 
         timer();
+    }
+
+    public void refreshAnim() {
+            repaint();
     }
 
     private void invokeScorePanel(){
@@ -67,35 +64,39 @@ public class GameWindow extends JPanel {
         add(scorePanel);
     }
 
-//    private void setPanels(){
-//
-//    };
-
-//    protected void paintComponent(Graphics g){
-//        super.paintComponent(g);
-//
-////        while (gameIsActive){
-////            generateSqures();
-////        }
-//
-//    }
-
     public void paintComponent(Graphics g) {
+        listOfRect = listOfSq(5);
         super.paintComponent(g);
-        g.setColor(squareCol);
-        g.drawRect(100, 100, 140, 140);
-        g.fillRect(200, 200, 140, 140);
+        for (Square square : listOfRect){
+            g.setColor(squareCol);
+            g.fillRect(square.getX(), square.getY(), square.size, square.size);
+        }
+        //g.fillRect(200, 200, 140, 140);
     }
 
 
     //todo
-    private void generateSqures() {
+    private void generateSqures(int amount) {
+        for (int i=0;i<amount;i++){
+
+        }
+
+    }
+
+    public static ArrayList<Square> listOfSq(int amount) {
+        ArrayList<Square> list = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            Square tempSq = new Square();
+
+            list.add(tempSq);
+        }
+        return list;
     }
 
 
-    private void generateRectangles() {
-        rect = new Rectangle();
-    }
+//    private void generateRectangles() {
+//        rect = new Rectangle();
+//    }
 
     public static void startGameWindow() {
         gameFrame = new JFrame();
@@ -109,7 +110,6 @@ public class GameWindow extends JPanel {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> startGameWindow());
-
+        SwingUtilities.invokeLater(GameWindow::startGameWindow);
     }
 }
