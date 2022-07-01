@@ -1,86 +1,106 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class GameWindow extends JPanel {
     static final int windowWidth = 600;
     static final int windowHeight = 720;
-    static String scoreString;
+    //    static String scoreString;
     static int timer_step = 20;
-
-    static int dY_Square = 20;
     static boolean gameIsActive = true;
-
     static JFrame gameFrame;
     JPanel gamePanel, scorePanel;
     Label scoreLabel;
-    Color bgCol = new Color(255,200,0);
-    Color squareCol = new Color(0,0,160);
-    Rectangle rect;
-    ArrayList<Square> listOfRect = null;
+    Color bgCol = new Color(255, 200, 0);
+    Color squareCol = new Color(0, 0, 160);
+    ArrayList<Square> listOfRect = listOfSq(10);
+
 
     public GameWindow() {
         setLayout(new BorderLayout());
         invokeGamePanel();
-        invokeScorePanel();
-        repaint();
+//        invokeScorePanel();
+        ScoreWindow sw = new ScoreWindow();
+        add(sw.getScorePanel());
 
+        addMouseListener(new MyMouseAdapter());
 
+//        addMouseListener(new MouseAdapter() {
+//            @Override
+//            public void mouseClicked(MouseEvent e) {
+//                super.mouseClicked(e);
+//                System.out.println("mouse clicked"+ e.getX() + ";"+e.getY());
+//
+//            }
+//        });
     }
 
-    public void timer(){
+    public void timer() {
         new Timer(timer_step, actEvt -> {
-                repaint();
+            repaint();
         }).start();
     }
 
-    private void invokeGamePanel(){
+    private void invokeGamePanel() {
         gamePanel = new JPanel();
-        //gamePanel.setSize(600, 60);
-        gamePanel.setBounds(0,0,600,620);
+        gamePanel.setBounds(0, 0, 600, 620);
         gamePanel.setBackground(bgCol);
         add(gamePanel);
 
         timer();
     }
 
-    public void refreshAnim() {
-            repaint();
-    }
+//    private void invokeScorePanel(){
+//        scorePanel = new JPanel();
+////        scorePanel.setLayout(new FlowLayout());
+//        scorePanel.setLocation(0,620);
+//        scoreLabel = new Label("Current score: "+scoreString);
+//        //scorePanel.setBounds(windowWidth/2-100,600, 200, 40);
+//        scorePanel.add(scoreLabel);
+//
+//
+//        add(scorePanel);
+//    }
 
-    private void invokeScorePanel(){
-        scorePanel = new JPanel();
-        scorePanel.setLayout(new FlowLayout());
-        scorePanel.setLocation(0,620);
-        scoreLabel = new Label("Current score: "+scoreString);
-        //scorePanel.setBounds(windowWidth/2-100,600, 200, 40);
-        scorePanel.add(scoreLabel);
+    public void updateSquareY() {
+        for (int i = 0; i < listOfRect.size(); i++) {
+            int currentY = listOfRect.get(i).getSquareY();
+
+            if (currentY <= 570) {
+                listOfRect.get(i).setY(currentY + 5);
+            }
 
 
-        add(scorePanel);
-    }
-
-    public void paintComponent(Graphics g) {
-        listOfRect = listOfSq(5);
-        super.paintComponent(g);
-        for (Square square : listOfRect){
-            g.setColor(squareCol);
-            g.fillRect(square.getX(), square.getY(), square.size, square.size);
+            else {
+//                ifSquareClicked();
+                Square temp_sq = new Square();
+                listOfRect.remove(i);
+                listOfRect.add(temp_sq);
+            }
         }
-        //g.fillRect(200, 200, 140, 140);
     }
 
 
-    //todo
-    private void generateSqures(int amount) {
-        for (int i=0;i<amount;i++){
+//    public void ifSquareClicked() {
+//        for (int i = 0; i < listOfRect.size(); i++) {
+//            if (listOfRect.get(i).checkCollion()) {
+//                Square temp_sq = new Square();
+//                listOfRect.remove(i);
+//                listOfRect.add(temp_sq);
+//            }
+//        }
+//    }
 
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.setColor(squareCol);
+        for (Square square : listOfRect) {
+            g.fillRect(square.getSquareX(), square.getSquareY(), square.size, square.size);
         }
-
+        updateSquareY();
     }
 
     public static ArrayList<Square> listOfSq(int amount) {
@@ -92,11 +112,6 @@ public class GameWindow extends JPanel {
         }
         return list;
     }
-
-
-//    private void generateRectangles() {
-//        rect = new Rectangle();
-//    }
 
     public static void startGameWindow() {
         gameFrame = new JFrame();
